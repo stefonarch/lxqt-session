@@ -55,7 +55,6 @@ private:
     LXQt::Power *mPower;
     LXQt::PowerManager *mPowerManager;
     LXQt::ScreenSaver *mScreensaver;
-    int mMonitor;
 };
 
 
