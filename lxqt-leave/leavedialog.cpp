@@ -31,6 +31,9 @@
 #include <QGuiApplication>
 #include <QRect>
 #include <QScreen>
+#include <LayerShellQt/shell.h>
+#include <LayerShellQt/window.h>
+
 
 LeaveDialog::LeaveDialog(QWidget* parent)
     : QDialog(parent, Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint),
@@ -50,6 +53,27 @@ LeaveDialog::LeaveDialog(QWidget* parent)
     */
     setWindowFlags((Qt::CustomizeWindowHint | Qt::FramelessWindowHint |
                     Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint));
+
+    // set the layer and centered position under Wayland
+ if (QGuiApplication::platformName() == QStringLiteral("wayland")) {
+        winId();
+        if(QWindow* win = windowHandle()) {
+            if(LayerShellQt::Window* layershell = LayerShellQt::Window::get(win)) {
+                layershell->setLayer(LayerShellQt::Window::Layer::LayerOverlay);
+                layershell->setKeyboardInteractivity(LayerShellQt::Window::KeyboardInteractivityExclusive);
+                int screenNumber = mMonitor;
+                    const auto screens = QGuiApplication::screens();
+                    if (mMonitor < 0 || mMonitor > screens.size() - 1)
+                    {
+                        const auto screen = QGuiApplication::screenAt(QCursor::pos());
+                        screenNumber = screen ? screens.indexOf(screen) : 0;
+                    }
+                    QRect desktop = screens.at(screenNumber)->availableGeometry();
+                   int topMargin = desktop.center().y() - ui->LeaveDialog->sizeHint().height(); // fixme
+                    layershell->setMargins(QMargins(0, topMargin, 0, 0));
+            }
+        }
+    }
 
     // populate the items
     QListWidgetItem * item = new QListWidgetItem{QIcon::fromTheme(QStringLiteral("system-log-out")), tr("Logout")};
