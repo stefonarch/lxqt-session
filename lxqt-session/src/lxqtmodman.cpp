@@ -398,6 +398,15 @@ void LXQtModuleManager::logout(bool doExit)
         mWmProcess->kill();
     }
 
+    // Under wayland exit the compositor
+    if (QGuiApplication::platformName() == QLatin1String("wayland"))
+    {
+        QString program = QString::fromUtf8("exit_compositors");
+        QStringList arguments;
+        arguments << QStringLiteral("");
+        QProcess::startDetached(program, arguments);
+    }
+
     if (doExit)
         QCoreApplication::exit(0);
 }
