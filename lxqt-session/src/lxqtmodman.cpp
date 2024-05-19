@@ -103,16 +103,12 @@ void LXQtModuleManager::startAutostartApps()
     // XDG autostart
     const XdgDesktopFileList fileList = XdgAutoStart::desktopFileList();
     QList<const XdgDesktopFile*> trayApps;
+    bool isWayland((QGuiApplication::platformName() == QLatin1String("wayland")));
     for (XdgDesktopFileList::const_iterator i = fileList.constBegin(); i != fileList.constEnd(); ++i)
     {
-        if (QGuiApplication::platformName() == QLatin1String("wayland"))
-        // if (QGuiApplication::platformName() == QLatin1String("wayland") && i->value(QSL("X-LXQt-X11_Only"), false).toBool()) recheck that should work bit doesn't
-            {
-            if (i->value(QSL("X-LXQt-X11-Only"), false).toBool())
-            {
-            // Don't include those desktop files under wayland
+        if (isWayland && i->value(QSL("X-LXQt-X11-Only"), false).toBool())
+        {
             continue;
-            }
         }
         if (i->value(QSL("X-LXQt-Need-Tray"), false).toBool())
             trayApps.append(&(*i));
@@ -405,15 +401,6 @@ void LXQtModuleManager::logout(bool doExit)
     {
         qCWarning(SESSION) << "Window Manager won't terminate ... killing.";
         mWmProcess->kill();
-    }
-
-    // Under wayland exit the compositor
-    if (QGuiApplication::platformName() == QLatin1String("wayland"))
-    {
-        QString program = QString::fromUtf8("exit_compositors");
-        QStringList arguments;
-        arguments << QStringLiteral("");
-        QProcess::startDetached(program, arguments);
     }
 
     if (doExit)
