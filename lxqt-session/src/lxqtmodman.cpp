@@ -78,7 +78,7 @@ void LXQtModuleManager::startup(LXQt::Settings& s)
     // The lxqt-confupdate can update the settings of the WM, so run it first.
     startConfUpdate();
 
-    // Start window manager
+    // Start x11 window manager
     if (QGuiApplication::platformName() == QStringLiteral("xcb"))
         startWm(&s);
 
@@ -103,8 +103,13 @@ void LXQtModuleManager::startAutostartApps()
     // XDG autostart
     const XdgDesktopFileList fileList = XdgAutoStart::desktopFileList();
     QList<const XdgDesktopFile*> trayApps;
+    bool isWayland((QGuiApplication::platformName() == QLatin1String("wayland")));
     for (XdgDesktopFileList::const_iterator i = fileList.constBegin(); i != fileList.constEnd(); ++i)
     {
+        if (isWayland && i->value(QSL("X-LXQt-X11-Only"), false).toBool())
+        {
+            continue;
+        }
         if (i->value(QSL("X-LXQt-Need-Tray"), false).toBool())
             trayApps.append(&(*i));
         else
@@ -399,8 +404,16 @@ void LXQtModuleManager::logout(bool doExit)
     }
 
     if (doExit)
+    {
+        if (QGuiApplication::platformName() == QLatin1String("wayland"))
+        {
+            QString program = QString::fromUtf8("exit_compositors");
+            QStringList arguments;
+            arguments << QStringLiteral("");
+            QProcess::startDetached(program, arguments);
+        }
         QCoreApplication::exit(0);
-}
+    }
 
 QString LXQtModuleManager::showWmSelectDialog()
 {
