@@ -70,10 +70,10 @@
  <tabstops>
   <tabstop>nameEdit</tabstop>
   <tabstop>commandEdit</tabstop>
+  <tabstop>browseButton</tabstop>
   <tabstop>trayCheckBox</tabstop>
   <tabstop>x11CheckBox</tabstop>
   <tabstop>buttonBox</tabstop>
-  <tabstop>browseButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
