@@ -63,6 +63,7 @@ private slots:
     void findCompositorButton_clicked();
     void startButton_clicked();
     void stopButton_clicked();
+    void findWayLockCommandButton_clicked();
 };
 
 #endif // BASICSETTINGS_H

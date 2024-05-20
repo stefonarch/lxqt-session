@@ -39,9 +39,11 @@ static const QLatin1String leaveConfirmationKey("leave_confirmation");
 static const QLatin1String lockBeforePowerActionsKey("lock_screen_before_power_actions");
 static const QLatin1String powerActionsAfterLockDelayKey("power_actions_after_lock_delay");
 static const QLatin1String QtScaleKey("QT_SCALE_FACTOR");
+static const QLatin1String wayLockCommandKey("lock_command_wayland");
 static const QLatin1String GdkScaleKey("GDK_SCALE");
 static const QLatin1String openboxValue("openbox");
 static const QLatin1String emptyValue("none");
+static const QLatin1String wayLockCommandValue("swaylock");
 
 BasicSettings::BasicSettings(LXQt::Settings *settings, QWidget *parent) :
     QWidget(parent),
@@ -54,6 +56,7 @@ BasicSettings::BasicSettings(LXQt::Settings *settings, QWidget *parent) :
     connect(ui->findCompositorButton, &QPushButton::clicked, this, &BasicSettings::findCompositorButton_clicked);
     connect(ui->startButton,  &QPushButton::clicked, this, &BasicSettings::startButton_clicked);
     connect(ui->stopButton,   &QPushButton::clicked, this, &BasicSettings::stopButton_clicked);
+    connect(ui->findWayLockCommandButton, &QPushButton::clicked, this, &BasicSettings::findWayLockCommandButton_clicked);
     restoreSettings();
 
     ui->moduleView->setModel(m_moduleModel);
@@ -95,6 +98,10 @@ QString currentPlatform = QGuiApplication::platformName();
     SessionConfigWindow::handleCfgComboBox(ui->compositorComboBox, knownCompositors, compositor);
     m_moduleModel->reset();
 
+    QString wayLockCommand = m_settings->value(wayLockCommandKey, wayLockCommandValue).toString();
+    SessionConfigWindow::handleCfgComboBox(ui->wayLockCommandComboBox, knownWMs, wayLockCommand);
+    m_moduleModel->reset();
+
     ui->leaveConfirmationCheckBox->setChecked(m_settings->value(leaveConfirmationKey, false).toBool());
     ui->lockBeforePowerActionsCheckBox->setChecked(m_settings->value(lockBeforePowerActionsKey, true).toBool());
     ui->powerAfterLockDelaySpinBox->setValue(m_settings->value(powerActionsAfterLockDelayKey, 0).toInt());
@@ -118,6 +125,7 @@ void BasicSettings::save()
     const bool lockBeforePowerActions = ui->lockBeforePowerActionsCheckBox->isChecked();
     const int powerAfterLockDelay = ui->powerAfterLockDelaySpinBox->value();
     const double scaleFactor = ui->scaleSpinBox->value();
+    const QString wayLockCommand = ui->wayLockCommandComboBox->currentText();
 
     QMap<QString, AutostartItem> previousItems(AutostartItem::createItemMap());
     QMutableMapIterator<QString, AutostartItem> i(previousItems);
@@ -155,6 +163,12 @@ void BasicSettings::save()
     if (powerAfterLockDelay != m_settings->value(powerActionsAfterLockDelayKey, 0).toInt())
     {
         m_settings->setValue(powerActionsAfterLockDelayKey, powerAfterLockDelay);
+        doRestart = true;
+    }
+
+    if (wayLockCommand != m_settings->value(wayLockCommandKey, wayLockCommandValue).toString())
+    {
+        m_settings->setValue(wayLockCommandKey, wayLockCommand);
         doRestart = true;
     }
 
@@ -215,4 +229,9 @@ void BasicSettings::startButton_clicked()
 void BasicSettings::stopButton_clicked()
 {
     m_moduleModel->toggleModule(ui->moduleView->selectionModel()->currentIndex(), false);
+}
+
+void BasicSettings::findWayLockCommandButton_clicked()
+{
+    SessionConfigWindow::updateCfgComboBox(ui->wayLockCommandComboBox, tr("Select a screenlocker for wayland"));
 }
