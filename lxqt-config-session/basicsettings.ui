@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>322</width>
-    <height>380</height>
+    <width>434</width>
+    <height>598</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
@@ -27,7 +27,7 @@
    <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Window Manager</string>
+      <string>X11 Window Manager</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
@@ -54,6 +54,35 @@
     </widget>
    </item>
    <item row="2" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Wayland Window Manager (experimental)</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QComboBox" name="compositorComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="findCompositorButton">
+        <property name="text">
+         <string>Search...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>LXQt Modules</string>
@@ -105,7 +134,7 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QGroupBox" name="groupBox_4">
      <property name="title">
       <string>Global Screen Scaling</string>
@@ -143,7 +172,7 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Leave Session</string>
@@ -204,12 +233,32 @@
    <signal>toggled(bool)</signal>
    <receiver>powerAfterLockDelaySpinBox</receiver>
    <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>lockBeforePowerActionsCheckBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>powerDelayLabel</receiver>
    <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
  </connections>
 </ui>

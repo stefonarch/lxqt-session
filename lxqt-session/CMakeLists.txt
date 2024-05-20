@@ -22,6 +22,7 @@ set(lxqt-session_SRCS
     src/lxqtmodman.cpp
     src/wmselectdialog.cpp
     src/windowmanager.cpp
+#    src/compositor.cpp
     src/sessionapplication.cpp
     src/sessiondbusadaptor.h
     src/lockscreenmanager.cpp

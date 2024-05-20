@@ -4,7 +4,7 @@
  * LXQt - a lightweight, Qt based, desktop toolset
  * https://lxqt.org/
  *
- * Copyright: 2010-2012 LXQt team
+ * Copyright: 2010-2011 LXQt team
  * Authors:
  *   Petr Vanek <petr@scribus.info>
  *
@@ -25,44 +25,25 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-#ifndef BASICSETTINGS_H
-#define BASICSETTINGS_H
+#ifndef COMPOSITOR_H
+#define COMPOSITOR_H
 
-#include <QWidget>
-#include <LXQt/Settings>
+#include <QMap>
+#include <QString>
 
-#include "modulemodel.h"
-
-namespace Ui {
-class BasicSettings;
-}
-
-class BasicSettings : public QWidget
+struct Compositor
 {
-    Q_OBJECT
-
-public:
-    explicit BasicSettings(LXQt::Settings *settings, QWidget *parent = nullptr);
-    ~BasicSettings() override;
-
-signals:
-    void needRestart();
-    void scaleFactorChanged();
-
-public slots:
-    void restoreSettings();
-    void save();
-
-private:
-    LXQt::Settings* m_settings;
-    ModuleModel* m_moduleModel;
-    Ui::BasicSettings* ui;
-
-private slots:
-    void findWmButton_clicked();
-    void findCompositorButton_clicked();
-    void startButton_clicked();
-    void stopButton_clicked();
+    QString name;
+    QString command;
+    QString comment;
+    bool    exists;
 };
 
-#endif // BASICSETTINGS_H
+typedef QList<Compositor> CompositorList;
+
+/*! Helper functions for compositor detection */
+CompositorList  getCompositorList(bool onlyAvailable=true);
+
+bool findCompositor(const QString &compositor);
+
+#endif

@@ -75,8 +75,10 @@ endif()
 set(PREDEF_XDG_DATA_DIRS "${PREDEF_XDG_DATA_DIRS}:/usr/local/share:/usr/share")
 set(PREDEF_XDG_CONFIG_DIRS "/etc:${LXQT_ETC_XDG_DIR}:/usr/share")
 configure_file(startlxqt.in startlxqt @ONLY)
+configure_file(startlxqtwayland.in startlxqtwayland @ONLY)
 install(PROGRAMS
     "${CMAKE_CURRENT_BINARY_DIR}/startlxqt"
+    "${CMAKE_CURRENT_BINARY_DIR}/startlxqtwayland"
     DESTINATION "${CMAKE_INSTALL_BINDIR}"
     COMPONENT Runtime
 )
@@ -92,4 +94,4 @@ add_subdirectory(autostart)
 
 # xsession *.desktop file for display managers
 add_subdirectory(xsession)
-
+add_subdirectory(waylandsession)

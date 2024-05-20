@@ -412,8 +412,9 @@ void LXQtModuleManager::logout(bool doExit)
             arguments << QStringLiteral("");
             QProcess::startDetached(program, arguments);
         }
-        QCoreApplication::exit(0);
     }
+        QCoreApplication::exit(0);
+}
 
 QString LXQtModuleManager::showWmSelectDialog()
 {
