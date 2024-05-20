@@ -1,5 +1,4 @@
 [Desktop Entry]
-Name=LXQt Labwc (Wayland)
 Type=Application
 Exec=startlxqtwayland
 TryExec=startlxqtwayland
