@@ -42,7 +42,7 @@ static const QLatin1String QtScaleKey("QT_SCALE_FACTOR");
 static const QLatin1String wayLockCommandKey("lock_command_wayland");
 static const QLatin1String GdkScaleKey("GDK_SCALE");
 static const QLatin1String openboxValue("openbox");
-static const QLatin1String emptyValue("none");
+static const QLatin1String labwcValue("labwc");
 static const QLatin1String wayLockCommandValue("swaylock");
 
 BasicSettings::BasicSettings(LXQt::Settings *settings, QWidget *parent) :
@@ -79,9 +79,10 @@ void BasicSettings::restoreSettings()
     }
 
     QStringList knownCompositors;
-    knownCompositors << QStringLiteral("Hyprland") << QStringLiteral("kwin_wayland") << QStringLiteral("qtile") << QStringLiteral("labwc") << QStringLiteral("sway") << QStringLiteral("wayfire");
+    knownCompositors << QStringLiteral("Hyprland") << QStringLiteral("kwin_wayland") << QStringLiteral("qtile") << QStringLiteral("labwc") << QStringLiteral("sway") << QStringLiteral("sway-fx") << QStringLiteral("river") << QStringLiteral("wayfire");
+    // For some reason this list will already show only installed compositors so the below hasn't to be implemented)
 
- //   QStringList knownCompositors;
+//    QStringList knownCompositors;
 //    const auto compositorList = getCompositorList(true);
 //    for (const Compositor &compositor : compositorList)
 //    {
@@ -89,7 +90,7 @@ void BasicSettings::restoreSettings()
 //    }
 
     QStringList knownWayLocker;
-    knownWayLocker << QStringLiteral("swaylock") << QStringLiteral("waylock") << QStringLiteral("hyprlock");
+    knownWayLocker << QStringLiteral("swaylock") << QStringLiteral("waylock") << QStringLiteral("waylock-fancy") << QStringLiteral("hyprlock");
 
     QString currentPlatform = QGuiApplication::platformName();
 
@@ -97,7 +98,7 @@ void BasicSettings::restoreSettings()
     SessionConfigWindow::handleCfgComboBox(ui->wmComboBox, knownWMs, wm);
     m_moduleModel->reset();
 
-    QString compositor = m_settings->value(compositorKey, emptyValue).toString();
+    QString compositor = m_settings->value(compositorKey, labwcValue).toString();
     SessionConfigWindow::handleCfgComboBox(ui->compositorComboBox, knownCompositors, compositor);
     m_moduleModel->reset();
 
@@ -145,7 +146,7 @@ void BasicSettings::save()
         doRestart = true;
     }
 
-    if (compositor != m_settings->value(compositorKey, emptyValue).toString())
+    if (compositor != m_settings->value(compositorKey, labwcValue).toString())
     {
         m_settings->setValue(compositorKey, compositor);
         doRestart = true;
