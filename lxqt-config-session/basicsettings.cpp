@@ -29,7 +29,6 @@
 #include "ui_basicsettings.h"
 
 #include "../lxqt-session/src/windowmanager.h"
-#include "../lxqt-session/src/compositor.h"
 #include "sessionconfigwindow.h"
 #include "autostartutils.h"
 

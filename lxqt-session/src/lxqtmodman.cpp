@@ -404,15 +404,6 @@ void LXQtModuleManager::logout(bool doExit)
     }
 
     if (doExit)
-    {
-        if (QGuiApplication::platformName() == QLatin1String("wayland"))
-        {
-            QString program = QString::fromUtf8("exit_compositors");
-            QStringList arguments;
-            arguments << QStringLiteral("");
-            QProcess::startDetached(program, arguments);
-        }
-    }
         QCoreApplication::exit(0);
 }
 
