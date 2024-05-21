@@ -105,6 +105,34 @@ elif
     [[ $COMPOSITOR = "kwin_wayland" ]];
     then
     exec kwin_wayland --no-kactivities --exit-with-session lxqt-session --xwayland
+
+elif
+    [[ $COMPOSITOR = "wayfire" ]];
+    then
+    if [[ ! -f "$XDG_CONFIG_HOME/lxqt/lxqt-wayfire.ini" ]]
+    then
+    cp  /usr/share/lxqt/wayland/lxqt-wayfire.ini "$XDG_CONFIG_HOME"/lxqt/
+    fi
+    exec wayfire -c $XDG_CONFIG_HOME/lxqt/lxqt-wayfire.ini
+
+elif
+    [[ $COMPOSITOR = "sway" ]];
+    then
+    if [[ ! -f "$XDG_CONFIG_HOME/lxqt/lxqt-sway.config" ]]
+    then
+    cp  /usr/share/lxqt/wayland/lxqt-sway.config "$XDG_CONFIG_HOME"/lxqt/
+    fi
+    exec sway -c $XDG_CONFIG_HOME/lxqt/lxqt-sway.config
+
+elif
+    [[ $COMPOSITOR = "Hyprland" ]];
+    then
+    if [[ ! -f "$XDG_CONFIG_HOME/lxqt/lxqt-hyprland.conf" ]]
+    then
+    cp /usr/share/lxqt/wayland/lxqt-hyprland.conf "$XDG_CONFIG_HOME"/lxqt/
+    fi
+    exec Hyprland -c $XDG_CONFIG_HOME/lxqt/lxqt-hyprland.conf
 else
     exec $COMPOSITOR
 fi
+
