@@ -88,7 +88,10 @@ void BasicSettings::restoreSettings()
 //       knownCompositors << compositor.command;
 //    }
 
-QString currentPlatform = QGuiApplication::platformName();
+    QStringList knownWayLocker;
+    knownWayLocker << QStringLiteral("swaylock") << QStringLiteral("waylock") << QStringLiteral("hyprlock");
+
+    QString currentPlatform = QGuiApplication::platformName();
 
     QString wm = m_settings->value(windowManagerKey, openboxValue).toString();
     SessionConfigWindow::handleCfgComboBox(ui->wmComboBox, knownWMs, wm);
@@ -99,7 +102,7 @@ QString currentPlatform = QGuiApplication::platformName();
     m_moduleModel->reset();
 
     QString wayLockCommand = m_settings->value(wayLockCommandKey, wayLockCommandValue).toString();
-    SessionConfigWindow::handleCfgComboBox(ui->wayLockCommandComboBox, knownWMs, wayLockCommand);
+    SessionConfigWindow::handleCfgComboBox(ui->wayLockCommandComboBox, knownWayLocker, wayLockCommand);
     m_moduleModel->reset();
 
     ui->leaveConfirmationCheckBox->setChecked(m_settings->value(leaveConfirmationKey, false).toBool());

@@ -213,6 +213,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>Ensure the chosen screen locker is installed.</string>
+        </property>
         <property name="editable">
          <bool>true</bool>
         </property>
