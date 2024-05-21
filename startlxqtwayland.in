@@ -72,7 +72,12 @@ export QT_QUICK_CONTROLS_STYLE=org.kde.desktop
 # use lxqt-applications.menu for main app menu
 export XDG_MENU_PREFIX="lxqt-"
 
-COMPOSITOR=`cat "$XDG_CONFIG_HOME"/lxqt/session.conf|grep compositor |awk -F'=' '{print $2}'`
+if grep -q "compositor" "$XDG_CONFIG_HOME/lxqt/session.conf"; then
+    COMPOSITOR=`cat "$XDG_CONFIG_HOME"/lxqt/session.conf|grep compositor |awk -F'=' '{print $2}'`
+else
+    echo "No compositor set in configuration or configuration not found, trying labwc ..."
+    COMPOSITOR=labwc
+fi
 
 export XDG_CURRENT_DESKTOP="LXQt:$COMPOSITOR:wlroots"
 

@@ -42,8 +42,7 @@ static const QLatin1String QtScaleKey("QT_SCALE_FACTOR");
 static const QLatin1String wayLockCommandKey("lock_command_wayland");
 static const QLatin1String GdkScaleKey("GDK_SCALE");
 static const QLatin1String openboxValue("openbox");
-static const QLatin1String labwcValue("labwc");
-static const QLatin1String wayLockCommandValue("swaylock");
+static const QLatin1String emptyValue("");
 
 BasicSettings::BasicSettings(LXQt::Settings *settings, QWidget *parent) :
     QWidget(parent),
@@ -98,11 +97,11 @@ void BasicSettings::restoreSettings()
     SessionConfigWindow::handleCfgComboBox(ui->wmComboBox, knownWMs, wm);
     m_moduleModel->reset();
 
-    QString compositor = m_settings->value(compositorKey, labwcValue).toString();
+    QString compositor = m_settings->value(compositorKey, emptyValue).toString();
     SessionConfigWindow::handleCfgComboBox(ui->compositorComboBox, knownCompositors, compositor);
     m_moduleModel->reset();
 
-    QString wayLockCommand = m_settings->value(wayLockCommandKey, wayLockCommandValue).toString();
+    QString wayLockCommand = m_settings->value(wayLockCommandKey, emptyValue).toString();
     SessionConfigWindow::handleCfgComboBox(ui->wayLockCommandComboBox, knownWayLocker, wayLockCommand);
     m_moduleModel->reset();
 
@@ -146,7 +145,7 @@ void BasicSettings::save()
         doRestart = true;
     }
 
-    if (compositor != m_settings->value(compositorKey, labwcValue).toString())
+    if (compositor != m_settings->value(compositorKey, emptyValue).toString())
     {
         m_settings->setValue(compositorKey, compositor);
         doRestart = true;
@@ -170,7 +169,7 @@ void BasicSettings::save()
         doRestart = true;
     }
 
-    if (wayLockCommand != m_settings->value(wayLockCommandKey, wayLockCommandValue).toString())
+    if (wayLockCommand != m_settings->value(wayLockCommandKey, emptyValue).toString())
     {
         m_settings->setValue(wayLockCommandKey, wayLockCommand);
         doRestart = true;
