@@ -77,7 +77,7 @@ void BasicSettings::restoreSettings()
     }
 
     QStringList knownCompositors;
-    knownCompositors << QStringLiteral("Hyprland") << QStringLiteral("kwin_wayland") << QStringLiteral("qtile") << QStringLiteral("labwc") << QStringLiteral("sway") << QStringLiteral("sway-fx") << QStringLiteral("river") << QStringLiteral("wayfire");
+    knownCompositors << QStringLiteral("Hyprland") << QStringLiteral("kwin_wayland") << QStringLiteral("labwc") << QStringLiteral("sway") << QStringLiteral("sway-fx") << QStringLiteral("river") << QStringLiteral("wayfire");
     // For some reason this list will already show only installed compositors so the below hasn't to be implemented)
 
 //    QStringList knownCompositors;

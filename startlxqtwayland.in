@@ -87,7 +87,7 @@ if
     # Copy default labwc configuration if not existing
     if [[ ! -d "$XDG_CONFIG_HOME/labwc" ]]
     then
-    cp -av /usr/share/lxqt/wayland/labwc "$XDG_CONFIG_HOME"/
+        cp -av /usr/share/lxqt/wayland/labwc "$XDG_CONFIG_HOME"/
     fi
 
 # Import keyboard layout and  cursor settings
@@ -104,14 +104,20 @@ if
 elif
     [[ $COMPOSITOR = "kwin_wayland" ]];
     then
-    exec kwin_wayland --no-kactivities --exit-with-session lxqt-session --xwayland
+    VALUE=`cat "$XDG_CONFIG_HOME"/lxqt/session.conf |grep lock_screen|cut -d "=" -f2`
+    if [[ $VALUE == "true" ]]
+    then
+        exec kwin_wayland --no-kactivities --exit-with-session lxqt-session --xwayland
+    else
+        exec kwin_wayland --no-kactivities --exit-with-session lxqt-session --xwayland --no-lockscreen
+    fi
 
 elif
     [[ $COMPOSITOR = "wayfire" ]];
     then
     if [[ ! -f "$XDG_CONFIG_HOME/lxqt/lxqt-wayfire.ini" ]]
     then
-    cp  /usr/share/lxqt/wayland/lxqt-wayfire.ini "$XDG_CONFIG_HOME"/lxqt/
+        cp /usr/share/lxqt/wayland/lxqt-wayfire.ini "$XDG_CONFIG_HOME"/lxqt/
     fi
     exec wayfire -c $XDG_CONFIG_HOME/lxqt/lxqt-wayfire.ini
 
@@ -120,7 +126,7 @@ elif
     then
     if [[ ! -f "$XDG_CONFIG_HOME/lxqt/lxqt-sway.config" ]]
     then
-    cp  /usr/share/lxqt/wayland/lxqt-sway.config "$XDG_CONFIG_HOME"/lxqt/
+       cp  /usr/share/lxqt/wayland/lxqt-sway.config "$XDG_CONFIG_HOME"/lxqt/
     fi
     exec sway -c $XDG_CONFIG_HOME/lxqt/lxqt-sway.config
 
@@ -129,10 +135,12 @@ elif
     then
     if [[ ! -f "$XDG_CONFIG_HOME/lxqt/lxqt-hyprland.conf" ]]
     then
-    cp /usr/share/lxqt/wayland/lxqt-hyprland.conf "$XDG_CONFIG_HOME"/lxqt/
+        cp /usr/share/lxqt/wayland/lxqt-hyprland.conf "$XDG_CONFIG_HOME"/lxqt/
     fi
     exec Hyprland -c $XDG_CONFIG_HOME/lxqt/lxqt-hyprland.conf
 else
+    echo "No supported compositor found!"
+    echo "The command `lxqt-session && killall $COMPOSITOR` has to be added manually to autostart in $COMPOSITOR."
     exec $COMPOSITOR
 fi
 
