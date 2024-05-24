@@ -180,7 +180,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="wayLockCommandLabel">
         <property name="text">
-         <string>Logout command in wayland:</string>
+         <string>Screenlock command in wayland:</string>
         </property>
        </widget>
       </item>
@@ -214,7 +214,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Ensure the chosen screen locker is installed.</string>
+         <string>This setting is not applied on kwin_wayland</string>
         </property>
         <property name="editable">
          <bool>true</bool>
