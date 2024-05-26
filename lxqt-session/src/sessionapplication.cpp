@@ -123,12 +123,7 @@ bool SessionApplication::startup()
                 });
 #endif
     }
-    // Avoid showing error with kwin
-    QByteArray envValue = qgetenv("XDG_CURRENT_DESKTOP");
-    QString env = QString::fromLocal8Bit(envValue);
-    bool isKwin = env.contains(QStringLiteral("kwin_wayland"));
-
-    if (lockScreenManager->startup(isKwin ? false : settings.value(QLatin1String("lock_screen_before_power_actions"), true).toBool()
+    if (lockScreenManager->startup(settings.value(QLatin1String("lock_screen_before_power_actions"), true).toBool()
                 , settings.value(QLatin1String("power_actions_after_lock_delay"), 0).toInt()))
         qCDebug(SESSION) << "LockScreenManager started successfully";
     else

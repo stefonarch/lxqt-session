@@ -1,0 +1,60 @@
+#!/bin/bash
+# Exports settings from LXQt x11 session to lxqt-wayfire.ini
+# Executed once at session start
+echo "Importing LXQt settings into wayfire..."
+wayfire_settings=$XDG_CONFIG_HOME/lxqt/lxqt-wayfire.ini
+lxqt_settings=$XDG_CONFIG_HOME/lxqt/session.conf
+layout_wayfire=$(cat $wayfire_settings |grep xkb_layout|cut -d '=' -f2-)
+
+# Check if layouts are configured in LXQt x11
+
+if grep -q layout "$lxqt_settings"; then
+    echo "Existing keyboard layout setting found in LXQt"
+    layout="xkb_layout = $(cat $lxqt_settings| grep  layout| sed 's/[^=]*=["]*\([^"]*\)["]*/\1/')"
+else
+    echo "No layout set in LXQt, defaulting to $LANG"
+    layout="xkb_layout = $(echo $LANG|cut -c 1,2)"
+    if echo "$xkb_layout" | grep -q "en"; then
+    layout=XKB_DEFAULT_LAYOUT=us
+    fi
+fi
+
+# Check if it is not configured already in wayfire
+if [[ "$layout_wayfire" =~ [a-z] ]]; then
+    echo "Keyboard layout in wayfire already configured"
+else
+    echo "No existing keyboard layout found in wayfire, importing..."
+    echo "Importing layout..."
+    sed -i '/xkb_layout/d' $wayfire_settings
+    sed -i "/\[input\]/a $layout" $wayfire_settings
+fi
+
+# Add toggle option only if more than one layout is configured
+
+if [[ $layout == *,* ]]; then
+# Import toggle layout setting at first run
+    options_lxqt=$(cat $lxqt_settings |grep  options|cut -d '=' -f2-)
+    options_wayfire=$(cat $wayfire_settings |grep xkb_options|cut -d '=' -f2-)
+
+    if [ -z "$options_wayfire" ]; then
+        echo "No existing layout switch shortcut found in wayfire, importing..."
+        sed -i '/xkb_options/d' $wayfire_settings
+        sed -i "/\[input\]/a $options_lxqt" $wayfire_settings #issue with spaces?
+    else
+      echo "Layout toggle shortcut in wayfire already configured"
+    fi
+else
+    echo "Only one layout present - toggle options skipped"
+fi
+
+# Sync wayfire cursor env vars with LXQt settings
+
+# remove existing lines
+sed -i '/cursor_theme/d' $wayfire_settings
+sed -i '/cursor_size/d' $wayfire_settings
+# import LXQt settings
+size=$(echo "cursor_size = $(cat $lxqt_settings |grep _size| cut -d '=' -f2)")
+theme=$(echo "cursor_theme = $(cat $lxqt_settings |grep theme| cut -d '=' -f2)" )
+sed -i "/\[input\]/a $size" $wayfire_settings
+sed -i "/\[input\]/a $theme" $wayfire_settings
+echo "Imported cursor size and theme"

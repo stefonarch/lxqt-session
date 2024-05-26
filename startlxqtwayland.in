@@ -104,13 +104,9 @@ if
 elif
     [[ $COMPOSITOR = "kwin_wayland" ]];
     then
-    VALUE=`cat "$XDG_CONFIG_HOME"/lxqt/session.conf |grep lock_screen|cut -d "=" -f2`
-    if [[ $VALUE == "true" ]]
-    then
+    # Import keyboard layout and  cursor settings
+    lxqt2kwinexporter
         exec kwin_wayland --no-kactivities --exit-with-session lxqt-session --xwayland
-    else
-        exec kwin_wayland --no-kactivities --exit-with-session lxqt-session --xwayland --no-lockscreen
-    fi
 
 elif
     [[ $COMPOSITOR = "wayfire" ]];
