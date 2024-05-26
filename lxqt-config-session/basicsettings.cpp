@@ -33,12 +33,11 @@
 #include "autostartutils.h"
 
 static const QLatin1String windowManagerKey("window_manager");
-static const QLatin1String compositorKey("compositor");
 static const QLatin1String leaveConfirmationKey("leave_confirmation");
 static const QLatin1String lockBeforePowerActionsKey("lock_screen_before_power_actions");
 static const QLatin1String powerActionsAfterLockDelayKey("power_actions_after_lock_delay");
 static const QLatin1String QtScaleKey("QT_SCALE_FACTOR");
-static const QLatin1String wayLockCommandKey("lock_command_wayland");
+static const QLatin1String x11LockCommandKey("lock_command");
 static const QLatin1String GdkScaleKey("GDK_SCALE");
 static const QLatin1String openboxValue("openbox");
 static const QLatin1String emptyValue("");
@@ -51,10 +50,9 @@ BasicSettings::BasicSettings(LXQt::Settings *settings, QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->findWmButton, &QPushButton::clicked, this, &BasicSettings::findWmButton_clicked);
-    connect(ui->findCompositorButton, &QPushButton::clicked, this, &BasicSettings::findCompositorButton_clicked);
     connect(ui->startButton,  &QPushButton::clicked, this, &BasicSettings::startButton_clicked);
     connect(ui->stopButton,   &QPushButton::clicked, this, &BasicSettings::stopButton_clicked);
-    connect(ui->findWayLockCommandButton, &QPushButton::clicked, this, &BasicSettings::findWayLockCommandButton_clicked);
+    connect(ui->findX11LockCommandButton, &QPushButton::clicked, this, &BasicSettings::findX11LockCommandButton_clicked);
     restoreSettings();
 
     ui->moduleView->setModel(m_moduleModel);
@@ -76,32 +74,13 @@ void BasicSettings::restoreSettings()
         knownWMs << wm.command;
     }
 
-    QStringList knownCompositors;
-    knownCompositors << QStringLiteral("Hyprland") << QStringLiteral("kwin_wayland") << QStringLiteral("labwc") << QStringLiteral("sway") << QStringLiteral("wayfire");
-    // For some reason this list will already show only installed compositors so the below hasn't to be implemented)
-
-//    QStringList knownCompositors;
-//    const auto compositorList = getCompositorList(true);
-//    for (const Compositor &compositor : compositorList)
-//    {
-//       knownCompositors << compositor.command;
-//    }
-
-    QStringList knownWayLocker;
-    knownWayLocker << QStringLiteral("swaylock") << QStringLiteral("waylock") << QStringLiteral("waylock-fancy") << QStringLiteral("hyprlock");
+    QStringList knownX11Locker;
+    knownX11Locker << QStringLiteral("i3lock") << QStringLiteral("kscreenlocker") << QStringLiteral("slock")  << QStringLiteral("xss-lock") << QStringLiteral("xsecurelock")<< QStringLiteral("xlock");//we could also add "xdg-screensaver lock"" and make it the default value, removing the "custom"
 
     QString currentPlatform = QGuiApplication::platformName();
 
     QString wm = m_settings->value(windowManagerKey, openboxValue).toString();
     SessionConfigWindow::handleCfgComboBox(ui->wmComboBox, knownWMs, wm);
-    m_moduleModel->reset();
-
-    QString compositor = m_settings->value(compositorKey, emptyValue).toString();
-    SessionConfigWindow::handleCfgComboBox(ui->compositorComboBox, knownCompositors, compositor);
-    m_moduleModel->reset();
-
-    QString wayLockCommand = m_settings->value(wayLockCommandKey, emptyValue).toString();
-    SessionConfigWindow::handleCfgComboBox(ui->wayLockCommandComboBox, knownWayLocker, wayLockCommand);
     m_moduleModel->reset();
 
     ui->leaveConfirmationCheckBox->setChecked(m_settings->value(leaveConfirmationKey, false).toBool());
@@ -111,6 +90,10 @@ void BasicSettings::restoreSettings()
     m_settings->beginGroup(QL1S("Environment"));
     ui->scaleSpinBox->setValue(m_settings->value(QtScaleKey, 1.0).toDouble());
     m_settings->endGroup();
+
+    QString x11LockCommand = m_settings->value(x11LockCommandKey, emptyValue).toString();
+    SessionConfigWindow::handleCfgComboBox(ui->x11LockCommandComboBox, knownX11Locker, x11LockCommand);
+    m_moduleModel->reset();
 }
 
 void BasicSettings::save()
@@ -122,12 +105,11 @@ void BasicSettings::save()
 
     bool doRestart = false;
     const QString windowManager = ui->wmComboBox->currentText();
-    const QString compositor = ui->compositorComboBox->currentText();
     const bool leaveConfirmation = ui->leaveConfirmationCheckBox->isChecked();
     const bool lockBeforePowerActions = ui->lockBeforePowerActionsCheckBox->isChecked();
     const int powerAfterLockDelay = ui->powerAfterLockDelaySpinBox->value();
     const double scaleFactor = ui->scaleSpinBox->value();
-    const QString wayLockCommand = ui->wayLockCommandComboBox->currentText();
+    const QString x11LockCommand = ui->x11LockCommandComboBox->currentText();
 
     QMap<QString, AutostartItem> previousItems(AutostartItem::createItemMap());
     QMutableMapIterator<QString, AutostartItem> i(previousItems);
@@ -141,12 +123,6 @@ void BasicSettings::save()
     if (windowManager != m_settings->value(windowManagerKey, openboxValue).toString())
     {
         m_settings->setValue(windowManagerKey, windowManager);
-        doRestart = true;
-    }
-
-    if (compositor != m_settings->value(compositorKey, emptyValue).toString())
-    {
-        m_settings->setValue(compositorKey, compositor);
         doRestart = true;
     }
 
@@ -168,9 +144,9 @@ void BasicSettings::save()
         doRestart = true;
     }
 
-    if (wayLockCommand != m_settings->value(wayLockCommandKey, emptyValue).toString())
+    if (x11LockCommand != m_settings->value(x11LockCommandKey, emptyValue).toString())
     {
-        m_settings->setValue(wayLockCommandKey, wayLockCommand);
+        m_settings->setValue(x11LockCommandKey, x11LockCommand);
         doRestart = true;
     }
 
@@ -218,11 +194,6 @@ void BasicSettings::findWmButton_clicked()
     SessionConfigWindow::updateCfgComboBox(ui->wmComboBox, tr("Select a window manager"));
 }
 
-void BasicSettings::findCompositorButton_clicked()
-{
-    SessionConfigWindow::updateCfgComboBox(ui->compositorComboBox, tr("Select a  wayland compositor"));
-}
-
 void BasicSettings::startButton_clicked()
 {
     m_moduleModel->toggleModule(ui->moduleView->selectionModel()->currentIndex(), true);
@@ -233,7 +204,7 @@ void BasicSettings::stopButton_clicked()
     m_moduleModel->toggleModule(ui->moduleView->selectionModel()->currentIndex(), false);
 }
 
-void BasicSettings::findWayLockCommandButton_clicked()
+void BasicSettings::findX11LockCommandButton_clicked()
 {
-    SessionConfigWindow::updateCfgComboBox(ui->wayLockCommandComboBox, tr("Select a screenlocker for wayland"));
+    SessionConfigWindow::updateCfgComboBox(ui->x11LockCommandComboBox, tr("Select a screenlocker"));
 }

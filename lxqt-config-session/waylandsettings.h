@@ -25,29 +25,26 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-#ifndef BASICSETTINGS_H
-#define BASICSETTINGS_H
+#ifndef WAYLANDSETTINGS_H
+#define WAYLANDSETTINGS_H
 
 #include <QWidget>
 #include <LXQt/Settings>
 
-#include "modulemodel.h"
-
 namespace Ui {
-class BasicSettings;
+class WaylandSettings;
 }
 
-class BasicSettings : public QWidget
+class WaylandSettings : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit BasicSettings(LXQt::Settings *settings, QWidget *parent = nullptr);
-    ~BasicSettings() override;
+    explicit WaylandSettings(LXQt::Settings *settings, QWidget *parent = nullptr);
+    ~WaylandSettings() override;
 
 signals:
     void needRestart();
-    void scaleFactorChanged();
 
 public slots:
     void restoreSettings();
@@ -55,14 +52,11 @@ public slots:
 
 private:
     LXQt::Settings* m_settings;
-    ModuleModel* m_moduleModel;
-    Ui::BasicSettings* ui;
+    Ui::WaylandSettings* ui;
 
 private slots:
-    void findWmButton_clicked();
-    void startButton_clicked();
-    void stopButton_clicked();
-    void findX11LockCommandButton_clicked();
+    void findCompositorButton_clicked();
+    void findWayLockCommandButton_clicked();
 };
 
-#endif // BASICSETTINGS_H
+#endif // WAYLANDSETTINGS_H

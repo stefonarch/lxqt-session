@@ -52,35 +52,6 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QGroupBox" name="groupBox_1">
-     <property name="title">
-      <string>Wayland Window Manager (experimental)</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_1">
-      <item row="0" column="0">
-       <widget class="QComboBox" name="compositorComboBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="editable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="findCompositorButton">
-        <property name="text">
-         <string>Search...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="3" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
@@ -178,14 +149,14 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="3" column="0">
-       <widget class="QLabel" name="wayLockCommandLabel">
+       <widget class="QLabel" name="x11LockCommandLabel">
         <property name="text">
-         <string>Screenlock command in wayland:</string>
+         <string>Screenlock command:</string>
         </property>
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QPushButton" name="findWayLockCommandButton">
+       <widget class="QPushButton" name="findX11LockCommandButton">
         <property name="text">
          <string>Search...</string>
         </property>
@@ -206,7 +177,7 @@
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QComboBox" name="wayLockCommandComboBox">
+       <widget class="QComboBox" name="x11LockCommandComboBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -214,7 +185,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>This setting is not applied on kwin_wayland</string>
+         <string>If empty "xdg-screensaver lock" will be used</string>
         </property>
         <property name="editable">
          <bool>true</bool>

@@ -2,7 +2,7 @@
 # Exports settings from LXQt x11 session to lxqt-wayfire.ini
 # Executed once at session start
 echo "Importing LXQt settings into wayfire..."
-wayfire_settings=$XDG_CONFIG_HOME/lxqt/lxqt-wayfire.ini
+wayfire_settings=$XDG_CONFIG_HOME/lxqt/wayland/lxqt-wayfire.ini
 lxqt_settings=$XDG_CONFIG_HOME/lxqt/session.conf
 layout_wayfire=$(cat $wayfire_settings |grep xkb_layout|cut -d '=' -f2-)
 

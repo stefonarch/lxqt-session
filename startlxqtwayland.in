@@ -65,12 +65,12 @@ export QT_AUTO_SCREEN_SCALE_FACTOR=0
 # Qt6
 export QT_ACCESSIBILITY=1
 
-# Prevent illegibile text in some KDE apps
-
-export QT_QUICK_CONTROLS_STYLE=org.kde.desktop
-
 # use lxqt-applications.menu for main app menu
 export XDG_MENU_PREFIX="lxqt-"
+
+if [[ ! -d "$XDG_CONFIG_HOME/lxqt/wayland" ]]; then
+    mkdir -p $XDG_CONFIG_HOME/lxqt/wayland/
+fi
 
 if grep -q "compositor" "$XDG_CONFIG_HOME/lxqt/session.conf"; then
     COMPOSITOR=`cat "$XDG_CONFIG_HOME"/lxqt/session.conf|grep compositor |awk -F'=' '{print $2}'`
@@ -82,12 +82,10 @@ fi
 export XDG_CURRENT_DESKTOP="LXQt:$COMPOSITOR:wlroots"
 
 if
-    [[ $COMPOSITOR == "labwc" ]];
-    then
+    [[ $COMPOSITOR == "labwc" ]]; then
     # Copy default labwc configuration if not existing
-    if [[ ! -d "$XDG_CONFIG_HOME/labwc" ]]
-    then
-        cp -av /usr/share/lxqt/wayland/labwc "$XDG_CONFIG_HOME"/
+    if [[ ! -d "$XDG_CONFIG_HOME/labwc" ]]; then
+        cp -av /usr/share/lxqt/wayland/labwc "$XDG_CONFIG_HOME"/  # use default location here
     fi
 
 # Import keyboard layout and  cursor settings
@@ -102,38 +100,34 @@ if
     exec $COMPOSITOR -C $XDG_CONFIG_HOME/labwc -S lxqt-session
 
 elif
-    [[ $COMPOSITOR = "kwin_wayland" ]];
-    then
+    [[ $COMPOSITOR = "kwin_wayland" ]]; then
+    # Prevent illegibile text in some KDE apps like systemsettings
+    export QT_QUICK_CONTROLS_STYLE=org.kde.desktop
     # Import keyboard layout and  cursor settings
     lxqt2kwinexporter
-        exec kwin_wayland --no-kactivities --exit-with-session lxqt-session --xwayland
+    exec kwin_wayland --no-kactivities --exit-with-session lxqt-session --xwayland
 
 elif
-    [[ $COMPOSITOR = "wayfire" ]];
-    then
-    if [[ ! -f "$XDG_CONFIG_HOME/lxqt/lxqt-wayfire.ini" ]]
-    then
-        cp /usr/share/lxqt/wayland/lxqt-wayfire.ini "$XDG_CONFIG_HOME"/lxqt/
+    [[ $COMPOSITOR = "wayfire" ]]; then
+    if [[ ! -f "$XDG_CONFIG_HOME/lxqt/wayland/lxqt-wayfire.ini" ]]; then
+        cp /usr/share/lxqt/wayland/lxqt-wayfire.ini "$XDG_CONFIG_HOME"/lxqt/wayland/
+        lxqt2wayfireexporter
     fi
-    exec wayfire -c $XDG_CONFIG_HOME/lxqt/lxqt-wayfire.ini
+    exec wayfire -c $XDG_CONFIG_HOME/lxqt/wayland/lxqt-wayfire.ini
 
 elif
-    [[ $COMPOSITOR = "sway" ]];
-    then
-    if [[ ! -f "$XDG_CONFIG_HOME/lxqt/lxqt-sway.config" ]]
-    then
-       cp  /usr/share/lxqt/wayland/lxqt-sway.config "$XDG_CONFIG_HOME"/lxqt/
+    [[ $COMPOSITOR = "sway" ]]; then
+    if [[ ! -f "$XDG_CONFIG_HOME/lxqt/wayland/lxqt-sway.config" ]]; then
+        cp /usr/share/lxqt/wayland/lxqt-sway.config "$XDG_CONFIG_HOME"/lxqt/wayland/
     fi
-    exec sway -c $XDG_CONFIG_HOME/lxqt/lxqt-sway.config
+    exec sway -c $XDG_CONFIG_HOME/lxqt/wayland/lxqt-sway.config
 
 elif
-    [[ $COMPOSITOR = "Hyprland" ]];
-    then
-    if [[ ! -f "$XDG_CONFIG_HOME/lxqt/lxqt-hyprland.conf" ]]
-    then
-        cp /usr/share/lxqt/wayland/lxqt-hyprland.conf "$XDG_CONFIG_HOME"/lxqt/
+    [[ $COMPOSITOR = "Hyprland" ]]; then
+    if [[ ! -f "$XDG_CONFIG_HOME/lxqt/wayland/lxqt-hyprland.conf" ]]; then
+        cp /usr/share/lxqt/wayland/lxqt-hyprland.conf "$XDG_CONFIG_HOME"/lxqt/wayland/
     fi
-    exec Hyprland -c $XDG_CONFIG_HOME/lxqt/lxqt-hyprland.conf
+    exec Hyprland -c $XDG_CONFIG_HOME/lxqt/wayland/lxqt-hyprland.conf
 else
     echo "No supported compositor found!"
     echo "The command `lxqt-session && killall $COMPOSITOR` has to be added manually to autostart in $COMPOSITOR."
